@@ -1,0 +1,17 @@
+.p-confirm-popup-footer .p-button {
+    margin-right: 40px;
+    padding: 0 10px 0 10px;
+    transition: background-color 0.3s ease;
+    /* Ajusta el margen derecho para separar los botones */
+}
+
+.p-dialog-header {
+    background-color: #65ced6;
+    text-align: center;
+    /* Cambia #nuevoColor por el color deseado */
+}
+
+.p-confirm-popup-footer .p-button:hover {
+    background-color: #15D3DF;
+    /* Cambia #nuevoColor por el color deseado al hacer focus */
+}
