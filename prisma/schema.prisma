@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewSheet {
+  id                    Int   @id @default(autoincrement())
+  typeTheEquipment      String
+  brand                 String
+  capacity              String
+  serial                String
+  location              String
+  ifm                   String?
+  ofm                   String?
+  evaporatorOutletTemp  String?
+  capacitorOutletTemp   String?
+  compressorComsumption String?
+  equipmentComsumption  String?
+  returnPressure        String?
+  dischargePresure      String?
+  refrigerantType       String?
+  evaporatorStatus      String?
+  capacitorStatus       String?
+  mttoPre               String?
+  technicalReport       String?
+  recommendations       String?
+  images                Image[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id          Int      @id @default(autoincrement())
+  newSheetId  Int
+  url         String
+  newSheet    NewSheet @relation(fields: [newSheetId], references: [id])
+}
