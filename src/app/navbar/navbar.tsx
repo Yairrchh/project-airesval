@@ -3,7 +3,7 @@ import React,{useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faBars , faRotate, faPenClip } from '@fortawesome/free-solid-svg-icons';
 import { faUser, } from '@fortawesome/free-regular-svg-icons';
-
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import logo from "../../../public/pngwing.png";
 import Image from "next/image";
@@ -12,6 +12,7 @@ import Image from "next/image";
 export default function Navbar() {
 
   const [selectedItem, setSelectedItem] = useState<string>('');
+  const { data: session } = useSession();
 
   const isSelected = (itemName: string) => selectedItem === itemName;
 
@@ -35,16 +36,24 @@ export default function Navbar() {
                     CPV <FontAwesomeIcon icon={faAngleDown} />
                   </li>
                 </Link>
-                <Link href="/">
+                <Link href="/airesval">
                   <li onClick={() => setSelectedItem('airesval')} className={isSelected('airesval') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'} >
                     Airesval
                   </li>
                 </Link>
-                <Link href="/login">
-                  <li onClick={() => setSelectedItem('login')} className={isSelected('login') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'}>
-                    Login <FontAwesomeIcon icon={faUser} />
+                  <Link href="/auth/register">
+                  <li onClick={() => setSelectedItem('register')} className={isSelected('register') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'}>
+                    Registrarse <FontAwesomeIcon icon={faUser} />
                   </li>
                 </Link>
+                    {session && (
+                      <li
+                        onClick={() => signOut()}
+                        className="rounded-lg bg-red-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer"
+                      >
+                        Cerrar sesión
+                      </li>
+                    )}
               <li></li>
             </ul>
             
