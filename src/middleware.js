@@ -1,3 +1,3 @@
 export { default } from "next-auth/middleware"
 
-export const config = { matcher: ["/cpv", "/auth/register"] }
+export const config = { matcher: ["/cpv","/cpv/technicalSheet","/cpv/newTechnicalSheet","/auth/register"] }

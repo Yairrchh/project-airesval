@@ -7,10 +7,13 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FilterMatchMode } from 'primereact/api';
 import { ConfirmPopup } from 'primereact/confirmpopup'; // To use <ConfirmPopup> tag
-import { confirmPopup } from 'primereact/confirmpopup'; // To use confirmPopup method    
+import { confirmPopup } from 'primereact/confirmpopup'; // To use confirmPopup method 
+import { Messages } from 'primereact/messages';
+import { Skeleton } from 'primereact/skeleton';        
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog'; 
+import { useSession } from 'next-auth/react';
 import Image from "next/image";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primereact/resources/primereact.min.css'; // core css
@@ -48,6 +51,25 @@ interface Sheets {
   updatedAt: Date;
 }
 
+interface Item {
+  typeTheEquiment: string;
+  brand: string;
+  serial: string;
+  Date: string;
+  actions: string;
+}
+
+interface ExtendedUser {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  typeOfUser?: string | null;
+}
+
+interface ExtendedSession {
+  user?: ExtendedUser;
+}
+
 const TechnicalSheet = () => {
 
   const [listSheets, setListSheets] = useState<Sheets[]>([]); // Inicializa el estado con un array vacío
@@ -67,16 +89,22 @@ const TechnicalSheet = () => {
 
   const [selectedImage, setSelectedImage] = useState<any>(null);
 
-  const toast = useRef<any>(null);
-  const buttonEl = useRef<any>(null);
+    //loading the skeleton
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [user, setUser] = useState(null);
+
+  const messages = useRef<Messages>(null);
 
   const router = useRouter();
 
+  const { data: session } = useSession();
+
+  console.log(session, 'informacion almacenada en session klajsdlkasjdlas');
+
   const handleEdit = (id: number) => {
     router.push(`/cpv/technicalSheet/editSheet/${id}`);
-  
   }
-
 
   useEffect(() => {
     const fetSheets = async () => {
@@ -84,6 +112,7 @@ const TechnicalSheet = () => {
         const getSheets = await getNewSheets();
         setListSheets(getSheets);
         console.log(getSheets, 'informacion almacenada en getSheets')
+
       } catch (error) {
         console.error(error); 
     }};
@@ -106,14 +135,20 @@ const TechnicalSheet = () => {
     const confirm = () => {
         if (deleteSheetId !== null) {
         handleDelete(deleteSheetId);
-        toast.current.show({ severity: 'info', summary: 'Exitoso', detail: 'Ficha eliminada exitosamente', life: 3000 });
+        setDeleteSheetId(null);
+        setModalDelete(false);
+        messages.current?.show({severity: 'success', summary: 'Eliminacion exitoso', detail: 'La hoja técnica se Elimino correctamente.'});
+
+
       } else {
         console.log('hubo un error')
       }
     }
 
     const reject = () => {
-      toast.current.show({ severity: 'warn', summary: 'Exitoso', detail: 'Eliminacion de ficha cancelada', life: 3000 });
+      messages.current?.show({severity: 'error', summary: 'Error', detail: 'Eliminacion cancelada.'});
+      setModalDelete(false);
+      setDeleteSheetId(null);
     };
 
     //function to show details of the sheet
@@ -127,24 +162,73 @@ const TechnicalSheet = () => {
     //Template for actions
     const actionBodyTemplate = (rowData: Sheets) => {
     return (
-      <React.Fragment>
+      
         <div className='flex gap-5'>
           <button onClick={() => {setShowModalSheet(true); handleShowSheetDetails(rowData.id) }}>
             <i className="pi pi-eye" style={{ color: '#15DF2E', fontSize: '1.3rem' }}></i>
           </button>
-          <button onClick={() => handleEdit(rowData.id)}>
-            <i className="pi pi-pencil" style={{ color: '#15D3DF', fontSize: '1.2rem' }}></i>
-          </button>
-          <Toast ref={toast} />
-          <ConfirmPopup target={buttonEl.current} visible={modalDelete} onHide={() => setModalDelete(false)} 
-              message="¿Estas seguro de eliminar la ficha tecnica?" icon="pi pi-exclamation-triangle" accept={confirm} reject={reject} />
-          <button className="card flex justify-content-center">
-              <i ref={buttonEl} onClick={() => {setModalDelete(true); setDeleteSheetId(rowData.id) }} className="pi pi-trash flex gap-2" style={{ color: '#DF3415', fontSize: '1.2rem' }} />
-          </button>
+          {
+            ((session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' || (session as ExtendedSession)?.user?.typeOfUser === 'EDITOR') && (
+              <button onClick={() => handleEdit(rowData.id)}>
+                <i className="pi pi-pencil" style={{ color: '#15D3DF', fontSize: '1.2rem' }}></i>
+              </button>)
+          }
+          {
+            (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && ( 
+              <button className="card flex justify-content-center">
+                <i  onClick={() => {setModalDelete(true); setDeleteSheetId(rowData.id) }} className="pi pi-trash flex gap-2" style={{ color: '#DF3415', fontSize: '1.2rem' }} />
+              </button>
+            )
+          }
+              {/* <Toast ref={toast} />
+              <ConfirmPopup target={buttonEl.current} visible={modalDelete} onHide={() => setModalDelete(false)} 
+              message="¿Estas seguro de eliminar la ficha tecnica?" icon="pi pi-exclamation-triangle" accept={confirm} reject={reject} /> */}
         </div>
-      </React.Fragment>
+      
     );
   };
+
+      useEffect(() => {
+    // Simula la carga de datos con un temporizador
+    const loadData = async () => {
+      // Aquí iría tu lógica de carga de datos
+      // Por ejemplo, cargar datos de una API
+      setTimeout(() => {
+        setIsLoading(false); // Cambia isLoading a false una vez que los datos estén cargados
+      }, 2000); // Simula un retraso de 2 segundos
+    };
+
+    loadData();
+  }, []);
+
+  if (isLoading) {
+
+    const items: Item[] = Array.from({ length: 5 }, (v, i) => ({
+      typeTheEquiment: `typeTheEquiment${i}`,
+      brand: `brand${i}`,
+      serial: `serial${i}`,
+      Date: `Date${i}`,
+      actions: `actions${i}`,
+    }));
+
+
+    return (
+      <div >
+          <div className='flex items-center justify-center mt-5 mb-5'>
+            <h1 className='bold text-2xl'>Lista de fichas tecnicas</h1>
+          </div>
+          <div className='border border-gray-300 mx-10'>
+          <DataTable value={items} tableStyle={{minWidth: '50rem'}} showGridlines stripedRows >
+            <Column field="typeTheEquiment" header="Tipo de equipo" style={{ width: '25%' }} body={<Skeleton width="100%" height="2rem"/>}></Column>
+            <Column field="brand" header="Marca" style={{ width: '25%' }} body={<Skeleton width="100%" height="2rem"/>}></Column>
+            <Column field="serial" header="Serial" style={{ width: '25%' }} body={<Skeleton width="100%" height="2rem" />}></Column>
+            <Column field="Date" header="Fecha de creacion" style={{ width: '50%' }} body={<Skeleton width="100%" height="2rem"/>}></Column>
+            <Column field="actions" header="Acciones" style={{ width: '50%' }} body={<Skeleton width="100%" height="2rem" />}></Column>
+        </DataTable>
+          </div>
+      </div>
+    );
+  }
 
   return (
         <div>
@@ -162,10 +246,10 @@ const TechnicalSheet = () => {
                   <Column body={actionBodyTemplate} header="Acciones"></Column>
              </DataTable>
           </div>
-            <Dialog header="Ficha tenica" visible={showModalSheet} style={{ width: '80vw' }} onHide={() => {setShowModalSheet(false); console.log('que pasa aqui') }}>
+            <Dialog header="Ficha tenica" className="dialog-style-one"  visible={showModalSheet} style={{ width: '80vw' }} onHide={() => {setShowModalSheet(false); console.log('que pasa aqui') }}>
                 {
                   selectShowModalSheet && (
-                    <div className='flex flex-col'>
+                    <div className='flex flex-col mt-2'>
                       <div className='flex items-center justify-center gap-7' >
                             {selectShowModalSheet.typeTheEquipment && (
                                 <div className='flex m-2 justify-center items-center gap-2 border border-gray-400 px-3 py-2' >
@@ -304,7 +388,7 @@ const TechnicalSheet = () => {
                           selectShowModalSheet.images && (
                             <div className='flex items-center justify-center gap-5'>
                               {selectShowModalSheet.images.map((image) => (
-                                <Image key={image.id} src={image.url} alt='imagen' width={450} height={350} onClick={() => setSelectedImage(image.url)} />
+                                <Image key={image.id} src={image.url} alt='imagen' style={{ objectFit: 'cover' }}  width={250} height={250} onClick={() => setSelectedImage(image.url)} />                                
                               ))}
                             </div>
                           )
@@ -312,6 +396,7 @@ const TechnicalSheet = () => {
                         {selectedImage && (
                         <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center' onClick={() => setSelectedImage(null)}>
                           <Image src={selectedImage} alt='Imagen ampliada' layout='fill' objectFit='contain' />
+
                         </div>
                       )}
                       </div>
@@ -319,6 +404,20 @@ const TechnicalSheet = () => {
                   )
                 }
             </Dialog>
+            <Dialog header="¿Deseas eliminar la ficha tecnica?" className="dialog-style-two" style={{ width: '50vw' }} visible={modalDelete} onHide={() => {setModalDelete(false); console.log('que pasa aqui') }}>
+            <div className='flex items-center justify-center my-5'>
+              <i className="pi pi-exclamation-circle text-red-600" style={{ fontSize: '4.5rem' }}></i>
+            </div>
+            <div className='flex items-center justify-center gap-10'>
+              <button className=' bg-blue-400/70 text-black px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' onClick={reject}>Cancelar</button>
+              <button className=' bg-red-400/70 text-black px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' onClick={confirm}>Si, Eliminar</button>
+            </div>
+          </Dialog>
+
+            <div className="fixed top-1 right-1 z-50">
+              <Messages ref={messages} />
+            </div>
+
         </div>
   );
 };

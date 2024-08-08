@@ -4,6 +4,9 @@ import React, {useEffect, useState, useRef} from "react";
 import { getSheetById} from "app/actions/actions";
 import { editSheet } from "app/actions/actions";
 import { Messages } from 'primereact/messages';
+import { deleteImageById } from "app/actions/actions";
+import { Skeleton } from 'primereact/skeleton';        
+import Image from "next/image";
 import 'primereact/resources/themes/md-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'; // core css
 import 'primeicons/primeicons.css'; // iconos
@@ -70,6 +73,7 @@ export default function EditSheet({params}: EditSheetProps) {
     const [technicalReport, setTechnicalReport] = useState('');
     const [recommendations, setRecommendations] = useState('');
     const [idSheetEdit, setIdSheetEdit] = useState<any>(null);
+    const [images, setImages] = useState<Image[]>([]);
     //state for the send images to the cloudinary
     const [imageUpload, setImageUpload] = useState<File[]>([]);
     //state for the images url
@@ -78,10 +82,15 @@ export default function EditSheet({params}: EditSheetProps) {
     const [showModal, setShowModal] = useState(true);
     // Referencia al componente Messages de PrimeReact
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    //loading squeleton 
+    const [isLoading, setIsLoading] = useState(true);
+
     // Referencia al componente Messages de PrimeReact
     const messages = useRef<Messages>(null);
     // Hook para redireccionar a otra página
     const router = useRouter();
+
 
     useEffect(() => {
         if(params.id) {
@@ -112,7 +121,8 @@ export default function EditSheet({params}: EditSheetProps) {
                 setMttoPre(sheet.mttoPre || '');
                 setTechnicalReport(sheet.technicalReport || '');
                 setRecommendations(sheet.recommendations || '');
-                console.log(sheet);
+                setImages(sheet.images || []);
+                console.log('Datos de la ficha tecnica',sheet);
                 } else {
                 console.error('No se encontró la hoja con el ID proporcionado');
                 }
@@ -230,6 +240,45 @@ export default function EditSheet({params}: EditSheetProps) {
         console.log("No se seleccionó ningún archivo.");
         }
     };
+
+    //funcion para manejar la eliminacion de imagenes 
+    const handleDeleteImage = async (imageId: number) => {
+        try {
+            await deleteImageById(imageId);
+            const updatedImages = images.filter((image) => image.id !== imageId);
+            setImages(updatedImages);
+            messages.current?.show({severity: 'success', summary: 'Guardado exitoso', detail: 'La imagen se elimino exitosamente.'});
+
+            console.log('Imagen eliminada con exito');
+        } catch (error) {
+            console.error('Error al eliminar la imagen', error);
+        }
+      };
+
+          useEffect(() => {
+    // Simula la carga de datos con un temporizador
+    const loadData = async () => {
+      // Aquí iría tu lógica de carga de datos
+      // Por ejemplo, cargar datos de una API
+      setTimeout(() => {
+        setIsLoading(false); // Cambia isLoading a false una vez que los datos estén cargados
+      }, 2000); // Simula un retraso de 2 segundos
+    };
+
+    loadData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center mt-20 mx-10">
+        <Skeleton className="mb-2"></Skeleton>
+        <Skeleton width="20rem" className="mb-2"></Skeleton>
+        <Skeleton width="15rem" className="mb-2"></Skeleton>
+        <Skeleton height="10rem" className="mb-2"></Skeleton>
+        <Skeleton width="20rem" height="4rem"></Skeleton>
+      </div>
+    );
+  }
 
 //        useEffect(() => {
 //     if (imageURL.length > 0) {
@@ -428,7 +477,26 @@ export default function EditSheet({params}: EditSheetProps) {
                       rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' rows={3} id='recommendations' name='recommendations' />
                     </div>
                 </div>
-                <div className='flex flex-col items-center justify-center gap-2'>
+                
+                <div>
+                  <div className='flex items-center justify-center pt-3 mt-5 mb-5 border-t w-full border-gray-300'>
+                    <h1 className='bold text-xl'>Imagenes</h1>
+                  </div>
+                  <div className='flex items-center justify-center gap-2'>
+                    <div className='flex flex-col items-center justify-center gap-2'>
+                      <div className='flex items-center justify-center gap-x-20'>
+                        {images.map((image) => (
+                          <div key={image.id} className="relative">
+                            <Image src={image.url} alt="Imagen" width={150} height={150} style={{ objectFit: 'cover' }}   />
+                            <button type="button" onClick={() => handleDeleteImage(image.id)} className="absolute top-1 right-1 text-red-500 text-3xl font-extrabold">X</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className='flex flex-col items-center justify-center gap-2 mt-3'>
                   <label  className='font-sans my-2'>Subir imagenenes<span className='text-red-500'>*</span></label>
                   <input ref={fileInputRef} onChange={handleImageChange} className='p-4 outline-none border rounded 
                   bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='file' id="images" name='images' accept='image/png, image/jpeg' multiple />

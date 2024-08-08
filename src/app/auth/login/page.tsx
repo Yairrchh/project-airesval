@@ -32,11 +32,11 @@ export default function LoginForm() {
   })
   
   return (
-    <div className='h-[calc(100vh-22rem)] flex flex-col justify-center items-center mt-5'>
+    <div className='h-[calc(100vh-15rem)] flex flex-col justify-center items-center mt-5'>
       <div className="font-bold text-4xl mb-2">
         <h1 className='text-2xl'>Inicio de Sesión</h1>
       </div>
-      <form onSubmit={onSubmit} className=' mb-2 flex flex-col items-center w-max-1/4 border-2 border-sky-300 rounded p-4 bg-[#BAE6FD]'>
+      <form onSubmit={onSubmit} className=' mb-2 flex flex-col items-center w-max-1/4 gap-3 border-2 border-sky-300 rounded px-10 py-16 bg-[#BAE6FD]'>
         <div>
           <label htmlFor='email'>Email:</label>
           <input type="email" placeholder='Example@gmai.com' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
@@ -51,7 +51,7 @@ export default function LoginForm() {
           }
           <div>
             <label htmlFor='password'>Password:</label>
-            <input type="password" placeholder='*******' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
+            <input type="password" placeholder='**************' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
             {...register("password", {required: {
                 value: true,
                 message: 'Este campo es requerido'

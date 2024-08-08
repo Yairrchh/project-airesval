@@ -91,6 +91,9 @@ export async function deleteSheet(sheetId: number) {
       where: {
         id: sheetId,
       },
+      include: {
+        images: true, // Incluir las imágenes
+      },
     });
     if (sheet) {
       console.log('Ficha técnica encontrada:', sheet);
@@ -141,11 +144,7 @@ export async function editSheet(sheetId: number, formData: FormData) {
     });
 
     if(imagesUrls && imagesUrls.length > 0) {
-      await prisma.image.deleteMany({
-      where: {
-        newSheetId: sheetId,
-      },
-    });
+      
 
     // Paso 3: Agregar las nuevas imágenes
     if (imagesUrls.length > 0) {
@@ -166,6 +165,23 @@ export async function editSheet(sheetId: number, formData: FormData) {
   } catch (error) {
     console.error('Error al actualizar la hoja técnica', error);
     throw error; // O manejar según sea necesario
+  }
+}
+
+//delete images 
+
+export async function deleteImageById(imageId: number) {
+  try {
+    const deleteImage = await prisma.image.delete({
+      where: {
+        id: imageId,
+      },
+    });
+    console.log('Imagen eliminada', deleteImage);
+    return deleteImage;
+  } catch (error) {
+    console.error('Error al eliminar la imagen', error);
+    throw new Error('No se pudo eliminar la imagen');
   }
 }
 
