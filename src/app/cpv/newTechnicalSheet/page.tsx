@@ -45,7 +45,7 @@ export default function NewTechnicalSheet() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   //reference for the messages
   const messages = useRef<Messages>(null);
-
+  //loading the skeleton
   const [isLoading, setIsLoading] = useState(true);
   //Funcion para manejar el envio de la informacion
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

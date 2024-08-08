@@ -4,7 +4,7 @@ import prisma from "app/lib/db";
 import bcrypt from "bcrypt";
 import { signIn } from "next-auth/react";
 
-    const authOptions = {
+ export const authOptions = {
         providers: [
             CredentialsProvider({
                 name: 'Credentials',
@@ -37,7 +37,7 @@ import { signIn } from "next-auth/react";
                         id: userFound.id,
                         email: userFound.email,
                         name: userFound.userName,
-
+                        typeOfUser: userFound.typeOfUser,
                     }
                 }
             })
@@ -46,8 +46,23 @@ import { signIn } from "next-auth/react";
         pages: {
             signIn: '/auth/login',
         },
+          callbacks: {
+            async jwt({ token, user }) {
+            if (user) {
+                token.typeOfUser = user.typeOfUser;
+            }
+            return token;
+            },
+            async session({ session, token }) {
+            if (token) {
+                session.user.typeOfUser = token.typeOfUser;
+            }
+            return session;
+            }
+        }       
     }
+
 
     const handler = NextAuth(authOptions)
 
-    export { handler as GET, handler as POST }
+    export { handler as GET, handler as POST}
