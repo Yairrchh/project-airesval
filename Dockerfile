@@ -1,9 +1,26 @@
+# Usa la imagen oficial de Node.js como base
 FROM node:18-alpine
 
+# Establece el directorio de trabajo en el contenedor
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
 
+# Copia los archivos de package.json y package-lock.json
+COPY package*.json ./
+
+# Instala las dependencias de producción
+RUN npm install --production
+
+# Ejecuta prisma generate para crear el cliente Prisma
+RUN npx prisma generate
+
+# Copia el resto de los archivos de la aplicación
 COPY . .
+
+# Compila la aplicación para producción
+RUN npm run build
+
+# Expone el puerto en el que la aplicación se ejecutará
 EXPOSE 3000
-CMD npm run dev 
+
+# Comando para iniciar la aplicación en modo producción
+CMD ["npm", "start"]
