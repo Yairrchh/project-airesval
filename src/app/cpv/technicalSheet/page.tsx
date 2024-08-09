@@ -180,9 +180,7 @@ const TechnicalSheet = () => {
               </button>
             )
           }
-              {/* <Toast ref={toast} />
-              <ConfirmPopup target={buttonEl.current} visible={modalDelete} onHide={() => setModalDelete(false)} 
-              message="¿Estas seguro de eliminar la ficha tecnica?" icon="pi pi-exclamation-triangle" accept={confirm} reject={reject} /> */}
+      
         </div>
       
     );
