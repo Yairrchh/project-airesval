@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala las dependencias de producción
-RUN npm install --production
+RUN npm install
 
 # Ejecuta prisma generate para crear el cliente Prisma
 RUN npx prisma generate
