@@ -180,9 +180,7 @@ const TechnicalSheet = () => {
               </button>
             )
           }
-              {/* <Toast ref={toast} />
-              <ConfirmPopup target={buttonEl.current} visible={modalDelete} onHide={() => setModalDelete(false)} 
-              message="¿Estas seguro de eliminar la ficha tecnica?" icon="pi pi-exclamation-triangle" accept={confirm} reject={reject} /> */}
+      
         </div>
       
     );
@@ -233,7 +231,7 @@ const TechnicalSheet = () => {
   return (
         <div>
             <div className='flex items-center justify-center mt-5 mb-5'>
-              <h1 className='bold text-2xl'>Lista de fichas tecnicas</h1>
+              <h1 className='bold text-2xl'>Lista de fichas Tecnicas</h1>
             </div>
           <div className='border border-gray-300 mx-10'>
               <DataTable value={listSheets} showGridlines stripedRows tableStyle={{minWidth: '50rem'}}
