@@ -20,8 +20,10 @@
     "cloudinary": "^2.2.0",
     "next": "14.2.3",
     "next-auth": "^4.24.7",
+    "npmlog": "^7.0.1",
     "primeicons": "^7.0.0",
     "primereact": "^10.7.0",
+    "q": "^1.5.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.46.1"
