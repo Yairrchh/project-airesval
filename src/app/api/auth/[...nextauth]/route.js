@@ -4,7 +4,7 @@ import prisma from "app/lib/db";
 import bcrypt from "bcrypt";
 import { signIn } from "next-auth/react";
 
- export const authOptions = {
+const authOptions = {
         providers: [
             CredentialsProvider({
                 name: 'Credentials',
