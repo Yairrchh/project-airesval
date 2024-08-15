@@ -91,15 +91,13 @@ export default function Navbar() {
                     Airesval
                   </li>
                 </Link>
-                {
-                    (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && (
+
                   <Link href="/auth/register">
                     <li onClick={() => setSelectedItem('register')} className={isSelected('register') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'}>
                       Registrarse <FontAwesomeIcon icon={faUser} />
                     </li>
                   </Link>
-                    ) 
-                }
+ 
                     {session && (
                       <li
                         onClick={() => signOut()}
@@ -114,3 +112,14 @@ export default function Navbar() {
         </nav>
     )
 }
+
+
+                // {
+                //     (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && (
+                //   <Link href="/auth/register">
+                //     <li onClick={() => setSelectedItem('register')} className={isSelected('register') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'}>
+                //       Registrarse <FontAwesomeIcon icon={faUser} />
+                //     </li>
+                //   </Link>
+                //     ) 
+                // }
