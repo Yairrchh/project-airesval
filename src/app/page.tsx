@@ -1,17 +1,30 @@
+'use client'
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { ProgressSpinner } from 'primereact/progressspinner';
+        
 
-import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
-//import { authOptions } from '../app/api/auth/[...nextauth]/route'; // Asegúrate de importar correctamente
+export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-export default async function Home() {
-  // const session = await getServerSession(authOptions);
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      const timer = setTimeout(() => {
+        router.push('/auth/login');
+      }, 1500); // 3000 milisegundos = 3 segundos
 
-  // if (!session) {
-  //   // Redirige a la página de inicio de sesión si no hay sesión
-  //   redirect('/auth/login');
-  // }
+      // Limpiar el temporizador si el componente se desmonta
+      return () => clearTimeout(timer);
+    }
+  }, [status, router]);
 
-  // Si hay una sesión, puedes renderizar el contenido de la página principal
-  return <h1>Bienvenido a la aplicación</h1>;
+ // Si hay una sesión, puedes renderizar el contenido de la página principal
+  return (
+    <div className='flex items-center justify-center h-[calc(100vh-15rem)]'>
+      <ProgressSpinner />
+    </div>
+  )
 }
 
