@@ -4,7 +4,6 @@ import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import config from "../../../config"
 
 export default function LoginForm() {
 
@@ -17,8 +16,7 @@ export default function LoginForm() {
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      redirect: true, // Cambiado a true
-      callbackUrl: 'https://project-airesval-production.up.railway.app/cpv', // URL de redirección
+      redirect: false, // Cambiado a true
     });
 
 
