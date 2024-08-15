@@ -101,12 +101,14 @@ export default function Navbar() {
                     ) 
                 }
                     {session && (
-                      <li
+                      <Link href="/auth/login">
+                        <li
                         onClick={() => signOut()}
                         className="rounded-lg bg-red-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer"
                       >
                         Cerrar sesión
                       </li>
+                      </Link>
                     )}
               <li></li>
             </ul>

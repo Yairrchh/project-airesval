@@ -16,17 +16,20 @@ export default function LoginForm() {
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      redirect: false,
+          redirect: true, // Cambiado a true
+    callbackUrl: '/cpv', // URL de redirección
     });
 
 
     console.log(res)
 
-    if(res?.error) {
+    if(res?.status === 401) {
       setError(res.error);
-    } else {
-      router.push('/cpv');
+    } else if (res?.status === 200) {
       setError(null);
+      router.push('/cpv');
+    } else {
+      setError('Error desconocido');
     }
 
   })
