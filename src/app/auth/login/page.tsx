@@ -18,7 +18,7 @@ export default function LoginForm() {
       email: data.email,
       password: data.password,
       redirect: true, // Cambiado a true
-      callbackUrl: `${config.BASE_URL}/cpv`, // URL de redirección
+      callbackUrl: 'https://project-airesval-production.up.railway.app/cpv', // URL de redirección
     });
 
 
