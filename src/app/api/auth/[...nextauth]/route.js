@@ -2,7 +2,7 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "app/lib/db";
 import bcrypt from "bcrypt";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 const authOptions = {
         providers: [
