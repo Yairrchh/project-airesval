@@ -17,18 +17,6 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { data: session, status } = useSession();
 
-    useEffect(() => {
-    if (session) {
-          if (session) {
-      setLoading(true);
-      setTimeout(() => {
-        router.push('/cpv');
-        setLoading(false)
-      }, 2000); // Simula un retraso de 2 segundos
-    }
-    }
-  }, [session, router]);
-
   const onSubmit = handleSubmit(async(data) => {
     const res = await signIn('credentials', {
       email: data.email,
@@ -45,8 +33,12 @@ export default function LoginForm() {
       setError(res.error);
     } else if (res?.status === 200) {
       setError(null);
+      setLoading(true);
       console.log('Inicio de sesión exitoso');
-      router.push('/cpv');
+      setTimeout(() => {
+        setLoading(false);
+        signIn(); // Llamada a signIn después de la simulación de carga
+      }, 1500);
     } else {
       setError('Error desconocido');
     }
