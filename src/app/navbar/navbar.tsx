@@ -49,8 +49,7 @@ export default function Navbar() {
     loadData();
   }, []);
 
-  const handleSignOut = async () => {
-    await signOut({ redirect: false });
+  const handleSignOut = () => {
     router.push('/login'); // Redirige a la página de inicio de sesión después de cerrar sesión
   };
 
