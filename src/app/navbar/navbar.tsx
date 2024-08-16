@@ -50,7 +50,7 @@ export default function Navbar() {
   }, []);
 
   const handleSignOut = () => {
-    router.push('/login'); // Redirige a la página de inicio de sesión después de cerrar sesión
+    router.push('/auth/login'); // Redirige a la página de inicio de sesión después de cerrar sesión
   };
 
 
