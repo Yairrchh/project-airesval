@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSession } from 'next-auth/react';
 
 export default function LoginForm() {
 
@@ -11,22 +12,25 @@ export default function LoginForm() {
   const router = useRouter();
 
   const [error, setError] = useState<string | null>(null);
+  const { data: session, status } = useSession();
 
   const onSubmit = handleSubmit(async(data) => {
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      redirect: false, // Cambiado a true
+      redirect: true, // Cambiado a true
     });
 
 
-    console.log(res)
+
+    console.log(res);
 
     if(res?.status === 401) {
       setError(res.error);
     } else if (res?.status === 200) {
+      router.push('https://project-airesval-production.up.railway.app/cpv');
       setError(null);
-      router.push('/cpv');
+      console.log('Inicio de sesión exitoso');
     } else {
       setError('Error desconocido');
     }
