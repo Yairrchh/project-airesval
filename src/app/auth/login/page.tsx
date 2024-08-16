@@ -1,25 +1,40 @@
 "use client"
 import prisma from "@/lib/db";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
+import { ProgressSpinner } from 'primereact/progressspinner';
+
 
 export default function LoginForm() {
 
   const { register, handleSubmit, formState: {errors} } = useForm();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [error, setError] = useState<string | null>(null);
   const { data: session, status } = useSession();
 
+    useEffect(() => {
+    if (session) {
+          if (session) {
+      setLoading(true);
+      setTimeout(() => {
+        router.push('/cpv');
+      }, 2000); // Simula un retraso de 2 segundos
+    }
+    }
+  }, [session, router]);
+
   const onSubmit = handleSubmit(async(data) => {
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      redirect: true, // Cambiado a true
+      redirect: false, // Cambiado a true
     });
+
 
 
 
@@ -28,14 +43,22 @@ export default function LoginForm() {
     if(res?.status === 401) {
       setError(res.error);
     } else if (res?.status === 200) {
-      router.push('https://project-airesval-production.up.railway.app/cpv');
       setError(null);
       console.log('Inicio de sesión exitoso');
+      router.push('/cpv');
     } else {
       setError('Error desconocido');
     }
 
   })
+
+  if(loading) {
+    return (
+      <div className='flex items-center justify-center h-[calc(100vh-15rem)]'>
+        <ProgressSpinner />
+      </div>
+    )
+  }
   
   return (
     <div className='h-[calc(100vh-15rem)] flex flex-col justify-center items-center mt-5'>
