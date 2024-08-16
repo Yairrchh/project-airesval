@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "app/lib/db";
 import bcrypt from "bcrypt";
 import { signIn, signOut } from "next-auth/react";
+import { log } from "console";
 
 const authOptions = {
         providers: [
@@ -44,7 +45,8 @@ const authOptions = {
         ],
         secret:process.env.SECRET,
         pages: {
-            signIn: '/auth/login',
+            signIn: '/cpv',
+            signOut: '/auth/login',
         },
           callbacks: {
             async jwt({ token, user }) {

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faBars , faRotate, faPenClip } from '@fortawesome/free-solid-svg-icons';
 import { faUser, } from '@fortawesome/free-regular-svg-icons';
 import { useSession, signOut } from "next-auth/react";
-import { Skeleton } from 'primereact/skeleton';
+import { Skeleton } from 'primereact/skeleton';    
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import logo from "../../../public/pngwing.png";
@@ -49,10 +49,10 @@ export default function Navbar() {
     loadData();
   }, []);
 
-  const handleSignOut = () => {
+    const handleSignOut = async () => {
+    await signOut({ redirect: false });
     router.push('/auth/login'); // Redirige a la página de inicio de sesión después de cerrar sesión
   };
-
 
   if (isLoading) {
     return (
@@ -108,14 +108,12 @@ export default function Navbar() {
                     ) 
                 }
                     {session && (
-                      
-                        <li
+                      <li
                         onClick={handleSignOut}
                         className="rounded-lg bg-red-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer"
                       >
                         Cerrar sesión
                       </li>
-                      
                     )}
               <li></li>
             </ul>
