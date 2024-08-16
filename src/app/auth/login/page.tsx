@@ -23,6 +23,7 @@ export default function LoginForm() {
       setLoading(true);
       setTimeout(() => {
         router.push('/cpv');
+        setLoading(false)
       }, 2000); // Simula un retraso de 2 segundos
     }
     }
