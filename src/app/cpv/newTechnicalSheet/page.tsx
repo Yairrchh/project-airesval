@@ -1,12 +1,8 @@
 "use client";
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import { Messages } from 'primereact/messages';
-import { Skeleton } from 'primereact/skeleton';        
-import prisma from "@/lib/db";
 import { addNewSheet } from 'app/actions/actions';
-import 'primereact/resources/themes/md-light-indigo/theme.css'
-import 'primereact/resources/primereact.min.css'; // core css
-import 'primeicons/primeicons.css'; // iconos
+import Gauge from "../../components/Gauge";
 
  
 
@@ -45,8 +41,6 @@ export default function NewTechnicalSheet() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   //reference for the messages
   const messages = useRef<Messages>(null);
-  //loading the skeleton
-  const [isLoading, setIsLoading] = useState(true);
   //Funcion para manejar el envio de la informacion
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -232,161 +226,120 @@ export default function NewTechnicalSheet() {
     }
   };
 
-    useEffect(() => {
-    // Simula la carga de datos con un temporizador
-    const loadData = async () => {
-      // Aquí iría tu lógica de carga de datos
-      // Por ejemplo, cargar datos de una API
-      setTimeout(() => {
-        setIsLoading(false); // Cambia isLoading a false una vez que los datos estén cargados
-      }, 2000); // Simula un retraso de 2 segundos
-    };
-
-    loadData();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col justify-center items-center mt-20 mx-10">
-        <Skeleton className="mb-2"></Skeleton>
-        <Skeleton width="20rem" className="mb-2"></Skeleton>
-        <Skeleton width="15rem" className="mb-2"></Skeleton>
-        <Skeleton height="10rem" className="mb-2"></Skeleton>
-        <Skeleton width="20rem" height="4rem"></Skeleton>
-      </div>
-    );
-  }
   return (
-    <div>
-        <div className='flex items-center justify-center mt-5 mb-5'>
-            <h1 className='bold text-2xl'>Agregar nueva ficha tecnica</h1>
+    <div className='bg-paper min-h-[calc(100vh-15rem)] px-4 sm:px-6 py-8'>
+        <div className='flex flex-col items-center justify-center mb-6 gap-1'>
+            <div className='flex items-center gap-2 text-steel-400'>
+              <Gauge className='w-4 h-4' needleDeg={20} />
+              <span className='field-label !mb-0'>Nueva inspección</span>
+            </div>
+            <h1 className='font-display font-semibold text-2xl text-steel-700'>Agregar ficha técnica</h1>
         </div>
-        <div className='border border-gray-300 mx-10' >
-          <form onSubmit={handleSubmit} className='flex flex-col items-center w-full justify-center'>
-            <div className='flex items-center justify-center gap-7 '>
-              <div className='flex flex-col m-2'>
-                <label className='font-sans my-2' >Tipo de equipo <span className='text-red-500'>*</span> </label>
-                <input value={typeTheEquipment} onChange={(event) => setTypeTheEquipment(event.target.value)} className='w-48 outline-none border rounded
-                 bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' required type='text' id="typeTheEquipment" name="typeTheEquipment"/>
+        <div className='card-panel mx-auto max-w-4xl px-6 sm:px-10 py-8' >
+          <form onSubmit={handleSubmit} className='flex flex-col w-full'>
+
+            <p className='section-title mb-4'><span className='text-brass font-mono text-sm'>01</span> Datos del equipo</p>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+              <div className='flex flex-col'>
+                <label className='field-label'>Tipo de equipo <span className='text-alert'>*</span></label>
+                <input value={typeTheEquipment} onChange={(event) => setTypeTheEquipment(event.target.value)} className='field-input' required type='text' id="typeTheEquipment" name="typeTheEquipment"/>
               </div>
-              <div className='flex flex-col m-2' >
-                <label className='font-sans my-2' >Marca <span className='text-red-500'>*</span>  </label>
-                <input value={brand} onChange={(event => setBrand(event.target.value))} className='w-48 outline-none border rounded bg-slate-200
-                 border-opacity-30 text-gray-700 border-gray-600 px-2' required type='text' id="brand" name='brand' />
+              <div className='flex flex-col'>
+                <label className='field-label'>Marca <span className='text-alert'>*</span></label>
+                <input value={brand} onChange={(event => setBrand(event.target.value))} className='field-input' required type='text' id="brand" name='brand' />
               </div>
-              <div className='flex flex-col m-2'>
-                <label className='font-sans my-2' >Capacidad <span className='text-red-500'>*</span> </label>
-                <input value={capacity} onChange={(event) => setCapacity(event.target.value)} className='w-48 outline-none border rounded bg-slate-200 
-                border-opacity-30 text-gray-700 border-gray-600 px-2' required type='text' id="capacity" name='capacity' />
+              <div className='flex flex-col'>
+                <label className='field-label'>Capacidad <span className='text-alert'>*</span></label>
+                <input value={capacity} onChange={(event) => setCapacity(event.target.value)} className='field-input' required type='text' id="capacity" name='capacity' />
               </div>
-              <div className='flex flex-col m-2'>
-                <label className='font-sans my-2' >Serial <span className='text-red-500'>*</span> </label>
-                <input value={serial} onChange={(event) => setSerial(event.target.value)}  className='w-48 outline-none border rounded bg-slate-200
-                border-opacity-30 text-gray-700 border-gray-600 px-2' required type='text' id="serial" name='serial' />
+              <div className='flex flex-col'>
+                <label className='field-label'>Serial <span className='text-alert'>*</span></label>
+                <input value={serial} onChange={(event) => setSerial(event.target.value)} className='field-input' required type='text' id="serial" name='serial' />
               </div>
             </div>
-            <div className='flex flex-col m-2 w-7/12 '>
-              <label className='font-sans my-2' >Ubicacion<span className='text-red-500'>*</span> </label>
-              <input value={location} onChange={(event) => setLocation(event.target.value)} className='w-full outline-none border rounded bg-slate-200
-              border-opacity-30 text-gray-700 border-gray-600 px-2' required type='text' id="location" name='location' />
+            <div className='flex flex-col mt-4'>
+              <label className='field-label'>Ubicación <span className='text-alert'>*</span></label>
+              <input value={location} onChange={(event) => setLocation(event.target.value)} className='field-input' required type='text' id="location" name='location' />
             </div>
-            <div className='w-full'>
-                <div className='flex items-center justify-center pt-3 mt-5 mb-5 border-t w-full border-gray-300' >
-                    <h1 className='bold text-xl' >Condiciones del equipo</h1>
-                </div> 
-                <div className='flex items-center justify-center gap-20'>
-                    <div className='flex flex-col items-end justify-end gap-y-4'>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Ventilador IFM</label>
-                          <input value={ifm} onChange={(event) => setIfm(event.target.value)} className='w-48 outline-none border rounded bg-slate-200
-                          border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='ifm' name='ifm' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Ventilador OFM</label>
-                          <input value={ofm} onChange={(event) => setOfm(event.target.value)} className='w-48 outline-none border rounded bg-slate-200
-                          border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='ofm' name='ofm' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>°C de salida del evaporador</label>
-                          <input value={evaporatorOutletTemp} onChange={(event) => setEvaporatorOutletTemp(event.target.value)} className='w-48 outline-none border rounded
-                          bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='evaporatorOutletTemp' name='evaporatorOutletTemp' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>°C de salida del condensador</label>
-                          <input value={capacitorOutletTemp} onChange={(event) => setCapacitorOutletTemp(event.target.value)} className='w-48 outline-none border
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='capacitorOutletTemp' name='capacitorOutletTemp' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Consumo del compresor</label>
-                          <input value={compressorComsumption} onChange={(event) => setCompressorComsumption(event.target.value)} className='w-48 outline-none border rounded
-                           bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='compressorComsumption' name='compressorComsumption' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Consumo del equipo</label>
-                          <input value={equipmentComsumption} onChange={(event) => setEquipmentComsumption(event.target.value)} className='w-48 outline-none 
-                          border rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='equipmentComsumption' name='equipmentComsumption' />
-                        </div>
+
+            <div className='border-t border-line mt-8 pt-6'>
+                <p className='section-title mb-4'><span className='text-brass font-mono text-sm'>02</span> Condiciones del equipo</p>
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4'>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Ventilador IFM</label>
+                      <input value={ifm} onChange={(event) => setIfm(event.target.value)} className='field-input' type='text' id='ifm' name='ifm' />
                     </div>
-                    <div className='flex flex-col items-end justify-end gap-y-4'>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Presion de retorno</label>
-                          <input value={returnPressure} onChange={(event) => setReturnPressure(event.target.value)} className='w-48 outline-none border 
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='returnPressure' name='returnPressure' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Presion de descarga</label>
-                          <input value={dischargePresure} onChange={(event) => setDischargePresure(event.target.value)} className='w-48 outline-none border 
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='dischargePresure' name='dischargePresure' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Tipo de refrigerante</label>
-                          <input value={refrigerantType} onChange={(event) => setRefrigerantType(event.target.value)} className='w-48 outline-none border 
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='refrigerantType' name='refrigerantType' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Evaporator status</label>
-                          <input value={evaporatorStatus} onChange={(event) => setEvaporatorStatus(event.target.value)} className='w-48 outline-none border 
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='evaporatorStatus' name='evaporatorStatus' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>Estado del condensador</label>
-                          <input value={capacitorStatus} onChange={(event) => setCapacitorStatus(event.target.value)} className='w-48 outline-none border 
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='capacitorStatus' name='capacitorStatus' />
-                        </div>
-                        <div className='flex items-center justify-center gap-2'>
-                          <label>MTTO PRE</label>
-                          <input value={mttoPre} onChange={(event) => setMttoPre(event.target.value)} className='w-48 outline-none border 
-                          rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='text' id='mttopre' name='mttopre' />
-                        </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Presión de retorno</label>
+                      <input value={returnPressure} onChange={(event) => setReturnPressure(event.target.value)} className='field-input' type='text' id='returnPressure' name='returnPressure' />
                     </div>
-                </div>
-                <div className='w-full'>
-                    <div className='flex flex-col items-center justify-center pt-3 mt-5 mb-5 border-t w-full border-gray-300'>
-                      <label className='bold text-xl mb-2' >Informe Tecnico</label>
-                      <textarea value={technicalReport} onChange={(event) => setTechnicalReport(event.target.value)} className='w-1/2 outline-none border 
-                      rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' rows={3} id='technicalReport' name='technicalReport' />
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Ventilador OFM</label>
+                      <input value={ofm} onChange={(event) => setOfm(event.target.value)} className='field-input' type='text' id='ofm' name='ofm' />
                     </div>
-                </div>
-                <div className='w-full'>
-                    <div className='flex flex-col items-center justify-center pt-3 mt-5 mb-5 border-t w-full border-gray-300'>
-                      <label className='bold text-xl mb-2'>Recomendaciones</label>
-                      <textarea value={recommendations} onChange={(event) => setRecommendations(event.target.value)} className='w-1/2 outline-none border 
-                      rounded bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' rows={3} id='recommendations' name='recommendations' />
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Presión de descarga</label>
+                      <input value={dischargePresure} onChange={(event) => setDischargePresure(event.target.value)} className='field-input' type='text' id='dischargePresure' name='dischargePresure' />
                     </div>
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2'>
-                  <label  className='font-sans my-2'>Subir imagenenes<span className='text-red-500'>*</span></label>
-                  <input ref={fileInputRef} onChange={handleImageChange} className='p-4 outline-none border rounded 
-                  bg-slate-200 border-opacity-30 text-gray-700 border-gray-600 px-2' type='file' id="images" name='images' accept='image/png, image/jpeg' multiple />
+                    <div className='flex flex-col'>
+                      <label className='field-label'>°C salida evaporador</label>
+                      <input value={evaporatorOutletTemp} onChange={(event) => setEvaporatorOutletTemp(event.target.value)} className='field-input' type='text' id='evaporatorOutletTemp' name='evaporatorOutletTemp' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Tipo de refrigerante</label>
+                      <input value={refrigerantType} onChange={(event) => setRefrigerantType(event.target.value)} className='field-input' type='text' id='refrigerantType' name='refrigerantType' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>°C salida condensador</label>
+                      <input value={capacitorOutletTemp} onChange={(event) => setCapacitorOutletTemp(event.target.value)} className='field-input' type='text' id='capacitorOutletTemp' name='capacitorOutletTemp' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Estado del evaporador</label>
+                      <input value={evaporatorStatus} onChange={(event) => setEvaporatorStatus(event.target.value)} className='field-input' type='text' id='evaporatorStatus' name='evaporatorStatus' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Consumo del compresor</label>
+                      <input value={compressorComsumption} onChange={(event) => setCompressorComsumption(event.target.value)} className='field-input' type='text' id='compressorComsumption' name='compressorComsumption' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Estado del condensador</label>
+                      <input value={capacitorStatus} onChange={(event) => setCapacitorStatus(event.target.value)} className='field-input' type='text' id='capacitorStatus' name='capacitorStatus' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>Consumo del equipo</label>
+                      <input value={equipmentComsumption} onChange={(event) => setEquipmentComsumption(event.target.value)} className='field-input' type='text' id='equipmentComsumption' name='equipmentComsumption' />
+                    </div>
+                    <div className='flex flex-col'>
+                      <label className='field-label'>MTTO PRE</label>
+                      <input value={mttoPre} onChange={(event) => setMttoPre(event.target.value)} className='field-input' type='text' id='mttopre' name='mttopre' />
+                    </div>
                 </div>
             </div>
-            <div className='flex items-center justify-center gap-20 mt-5 mb-5'>
-              <button className='bg-red-400/70 text-black px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' type='reset'>Cancelar</button>
-              <button className='bg-blue-400/70 text-black px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' type='submit'>Guardar</button>
+
+            <div className='border-t border-line mt-8 pt-6'>
+              <p className='section-title mb-3'><span className='text-brass font-mono text-sm'>03</span> Informe técnico</p>
+              <textarea value={technicalReport} onChange={(event) => setTechnicalReport(event.target.value)} className='field-textarea w-full' rows={3} id='technicalReport' name='technicalReport' />
+            </div>
+
+            <div className='border-t border-line mt-8 pt-6'>
+              <p className='section-title mb-3'><span className='text-brass font-mono text-sm'>04</span> Recomendaciones</p>
+              <textarea value={recommendations} onChange={(event) => setRecommendations(event.target.value)} className='field-textarea w-full' rows={3} id='recommendations' name='recommendations' />
+            </div>
+
+            <div className='border-t border-line mt-8 pt-6'>
+              <p className='section-title mb-3'><span className='text-brass font-mono text-sm'>05</span> Evidencia fotográfica</p>
+              <label className='field-label'>Subir imágenes <span className='text-alert'>*</span></label>
+              <input ref={fileInputRef} onChange={handleImageChange} className='field-input font-sans file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-steel-700 file:text-white file:font-display file:text-xs file:cursor-pointer cursor-pointer'
+              type='file' id="images" name='images' accept='image/png, image/jpeg' multiple />
+            </div>
+
+            <div className='flex items-center justify-center gap-6 mt-10'>
+              <button className='btn-secondary' type='reset'>Cancelar</button>
+              <button className='btn-primary' type='submit'>Guardar ficha</button>
             </div>
           </form>
         </div>
-            
+
         {showModal && (
             <div className="fixed top-1 right-1 z-50">
               <Messages ref={messages} />

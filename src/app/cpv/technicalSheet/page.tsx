@@ -15,9 +15,7 @@ import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog'; 
 import { useSession } from 'next-auth/react';
 import Image from "next/image";
-import "primereact/resources/themes/lara-light-cyan/theme.css";
-import 'primereact/resources/primereact.min.css'; // core css
-import 'primeicons/primeicons.css';
+import Gauge from "../../components/Gauge";
 import './style.css';
 
 interface Image {
@@ -111,11 +109,12 @@ const TechnicalSheet = () => {
       try {
         const getSheets = await getNewSheets();
         setListSheets(getSheets);
-        console.log(getSheets, 'informacion almacenada en getSheets')
-
       } catch (error) {
-        console.error(error); 
-    }};
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetSheets();
   }, []);
 
@@ -165,18 +164,18 @@ const TechnicalSheet = () => {
       
         <div className='flex gap-5'>
           <button onClick={() => {setShowModalSheet(true); handleShowSheetDetails(rowData.id) }}>
-            <i className="pi pi-eye" style={{ color: '#15DF2E', fontSize: '1.3rem' }}></i>
+            <i className="pi pi-eye" style={{ color: '#2F6FE0', fontSize: '1.3rem' }}></i>
           </button>
           {
             ((session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' || (session as ExtendedSession)?.user?.typeOfUser === 'EDITOR') && (
               <button onClick={() => handleEdit(rowData.id)}>
-                <i className="pi pi-pencil" style={{ color: '#15D3DF', fontSize: '1.2rem' }}></i>
+                <i className="pi pi-pencil" style={{ color: '#C69A3D', fontSize: '1.2rem' }}></i>
               </button>)
           }
           {
-            (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && ( 
+            (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && (
               <button className="card flex justify-content-center">
-                <i  onClick={() => {setModalDelete(true); setDeleteSheetId(rowData.id) }} className="pi pi-trash flex gap-2" style={{ color: '#DF3415', fontSize: '1.2rem' }} />
+                <i  onClick={() => {setModalDelete(true); setDeleteSheetId(rowData.id) }} className="pi pi-trash flex gap-2" style={{ color: '#D0472B', fontSize: '1.2rem' }} />
               </button>
             )
           }
@@ -185,19 +184,6 @@ const TechnicalSheet = () => {
       
     );
   };
-
-      useEffect(() => {
-    // Simula la carga de datos con un temporizador
-    const loadData = async () => {
-      // Aquí iría tu lógica de carga de datos
-      // Por ejemplo, cargar datos de una API
-      setTimeout(() => {
-        setIsLoading(false); // Cambia isLoading a false una vez que los datos estén cargados
-      }, 2000); // Simula un retraso de 2 segundos
-    };
-
-    loadData();
-  }, []);
 
   if (isLoading) {
 
@@ -211,11 +197,15 @@ const TechnicalSheet = () => {
 
 
     return (
-      <div >
-          <div className='flex items-center justify-center mt-5 mb-5'>
-            <h1 className='bold text-2xl'>Lista de fichas tecnicas</h1>
+      <div className='bg-paper min-h-[calc(100vh-15rem)] px-6 py-8'>
+          <div className='flex flex-col items-center justify-center mb-6 gap-1'>
+            <div className='flex items-center gap-2 text-steel-400'>
+              <Gauge className='w-4 h-4' />
+              <span className='field-label !mb-0'>Historial de equipos</span>
+            </div>
+            <h1 className='font-display font-semibold text-2xl text-steel-700'>Lista de fichas técnicas</h1>
           </div>
-          <div className='border border-gray-300 mx-10'>
+          <div className='card-panel overflow-hidden mx-auto max-w-6xl sheet-table'>
           <DataTable value={items} tableStyle={{minWidth: '50rem'}} showGridlines stripedRows >
             <Column field="typeTheEquiment" header="Tipo de equipo" style={{ width: '25%' }} body={<Skeleton width="100%" height="2rem"/>}></Column>
             <Column field="brand" header="Marca" style={{ width: '25%' }} body={<Skeleton width="100%" height="2rem"/>}></Column>
@@ -229,11 +219,15 @@ const TechnicalSheet = () => {
   }
 
   return (
-        <div>
-            <div className='flex items-center justify-center mt-5 mb-5'>
-              <h1 className='bold text-2xl'>Lista de fichas Tecnicas</h1>
+        <div className='bg-paper min-h-[calc(100vh-15rem)] px-6 py-8'>
+            <div className='flex flex-col items-center justify-center mb-6 gap-1'>
+              <div className='flex items-center gap-2 text-steel-400'>
+                <Gauge className='w-4 h-4' />
+                <span className='field-label !mb-0'>Historial de equipos</span>
+              </div>
+              <h1 className='font-display font-semibold text-2xl text-steel-700'>Lista de fichas técnicas</h1>
             </div>
-          <div className='border border-gray-300 mx-10'>
+          <div className='card-panel overflow-hidden mx-auto max-w-6xl sheet-table'>
               <DataTable value={listSheets} showGridlines stripedRows tableStyle={{minWidth: '50rem'}}
               dataKey="id" filters={filters} filterDisplay="row" 
                     globalFilterFields={['name', 'brand.name', 'serial', 'status']}  emptyMessage="No existe el equipo.">
@@ -250,116 +244,116 @@ const TechnicalSheet = () => {
                     <div className='flex flex-col mt-2'>
                       <div className='flex items-center justify-center gap-7' >
                             {selectShowModalSheet.typeTheEquipment && (
-                                <div className='flex m-2 justify-center items-center gap-2 border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Tipo de equipo: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.typeTheEquipment}</p>
+                                <div className='flex m-2 justify-center items-center gap-2 border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Tipo de equipo: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.typeTheEquipment}</p>
                                 </div>
                             )}
                             {selectShowModalSheet.brand && (
-                                <div className='flex m-2 justify-center items-center gap-2 border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Marca: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.brand}</p>
+                                <div className='flex m-2 justify-center items-center gap-2 border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Marca: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.brand}</p>
                                 </div>
                             )}
                             {selectShowModalSheet.capacity && (
-                                <div className='flex m-2 justify-center items-center gap-2 border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Capacidad: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.capacity}</p>
+                                <div className='flex m-2 justify-center items-center gap-2 border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Capacidad: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.capacity}</p>
                                 </div>
                             )}
                             {selectShowModalSheet.serial && (
-                                <div className='flex m-2 justify-center items-center gap-2 border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Serial: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.serial}</p>
+                                <div className='flex m-2 justify-center items-center gap-2 border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Serial: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.serial}</p>
                                 </div>
                             )}
                       </div>
                       <div className='flex items-center justify-center'>
                             {selectShowModalSheet.location && (
-                                <div className='flex flex-col w-7/12  m-2 justify-center items-center border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Ubicacion del equipo: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.location}</p>
+                                <div className='flex flex-col w-7/12  m-2 justify-center items-center border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Ubicacion del equipo: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.location}</p>
                                 </div>
                             )}
                       </div>
                       <div className='flex flex-col mt-1'>
                         {/* <div className='flex items-center justify-center'>
-                          <h1 className='font-sans font-semibold'>Condiciones del equipo</h1>
+                          <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Condiciones del equipo</h1>
                         </div> */}
                         <div className='flex items-center justify-center'>
                             <div className='flex flex-col'>
                               {selectShowModalSheet.ifm && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>IFM: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.ifm}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>IFM: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.ifm}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.ofm && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>OFM: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.ofm}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>OFM: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.ofm}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.evaporatorOutletTemp && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Temperatura de salida del evaporador: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.evaporatorOutletTemp}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Temperatura de salida del evaporador: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.evaporatorOutletTemp}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.capacitorOutletTemp && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Temperatura de salida del capacitor: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.capacitorOutletTemp}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Temperatura de salida del capacitor: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.capacitorOutletTemp}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.compressorComsumption && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Consumo del compresor: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.compressorComsumption}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Consumo del compresor: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.compressorComsumption}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.equipmentComsumption && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Consumo del equipo: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.equipmentComsumption}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Consumo del equipo: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.equipmentComsumption}</p>
                                 </div>
                               )}
                             </div>
                             <div className='flex flex-col'>
                               {selectShowModalSheet.returnPressure && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Presion de retorno: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.returnPressure}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Presion de retorno: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.returnPressure}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.dischargePresure && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Presion de descarga: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.dischargePresure}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Presion de descarga: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.dischargePresure}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.refrigerantType && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Tipo de refrigerante: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.refrigerantType}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Tipo de refrigerante: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.refrigerantType}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.evaporatorStatus && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Estado del evaporador: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.evaporatorStatus}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Estado del evaporador: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.evaporatorStatus}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.capacitorStatus && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>Estado del capacitor: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.capacitorStatus}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Estado del capacitor: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.capacitorStatus}</p>
                                 </div>
                               )}
                               {selectShowModalSheet.mttoPre && (
-                                <div className='flex m-2 justify-center items-center border border-gray-400 px-2 py-2' >
-                                  <h1 className='font-sans font-semibold'>MTTO PRE: </h1>
-                                  <p className='font-sans pl-2'>{selectShowModalSheet.mttoPre}</p>
+                                <div className='flex m-2 justify-center items-center border border-line px-2 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>MTTO PRE: </h1>
+                                  <p className='font-mono text-sm text-steel-700 pl-2'>{selectShowModalSheet.mttoPre}</p>
                                 </div>
                               )}
                             </div>
@@ -367,17 +361,17 @@ const TechnicalSheet = () => {
                       </div>
                       <div className='flex items-center justify-center w-full'>
                             {selectShowModalSheet.technicalReport && (
-                                <div className='flex flex-col w-full  m-2 justify-center items-center border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Reporte Tecnico: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.technicalReport}</p>
+                                <div className='flex flex-col w-full  m-2 justify-center items-center border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Reporte Tecnico: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.technicalReport}</p>
                                 </div>
                             )}
                       </div>
                       <div className='flex items-center justify-center w-full mb-5'>
                             {selectShowModalSheet.recommendations && (
-                                <div className='flex flex-col w-full  m-2 justify-center items-center border border-gray-400 px-3 py-2' >
-                                  <h1 className='font-sans font-semibold'>Recomendaciones: </h1>
-                                  <p className='font-sans'>{selectShowModalSheet.recommendations}</p>
+                                <div className='flex flex-col w-full  m-2 justify-center items-center border border-line px-3 py-2' >
+                                  <h1 className='font-display text-xs uppercase tracking-wide text-steel-400'>Recomendaciones: </h1>
+                                  <p className='font-mono text-sm text-steel-700'>{selectShowModalSheet.recommendations}</p>
                                 </div>
                             )}
                       </div>
@@ -406,9 +400,9 @@ const TechnicalSheet = () => {
             <div className='flex items-center justify-center my-5'>
               <i className="pi pi-exclamation-circle text-red-600" style={{ fontSize: '4.5rem' }}></i>
             </div>
-            <div className='flex items-center justify-center gap-10'>
-              <button className=' bg-blue-400/70 text-black px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' onClick={reject}>Cancelar</button>
-              <button className=' bg-red-400/70 text-black px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' onClick={confirm}>Si, Eliminar</button>
+            <div className='flex items-center justify-center gap-6'>
+              <button className='btn-secondary' onClick={reject}>Cancelar</button>
+              <button className='btn bg-alert text-white border-alert hover:bg-alert-light hover:border-alert-light' onClick={confirm}>Sí, eliminar</button>
             </div>
           </Dialog>
 

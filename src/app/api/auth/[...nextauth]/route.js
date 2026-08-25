@@ -45,7 +45,7 @@ const authOptions = {
         ],
         secret:process.env.SECRET,
         pages: {
-            signIn: '/cpv',
+            signIn: '/auth/login',
             signOut: '/auth/login',
         },
           callbacks: {

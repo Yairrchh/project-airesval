@@ -1,14 +1,14 @@
 "use client";
-import React,{useState, useEffect} from "react";
+import React,{useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faBars , faRotate, faPenClip } from '@fortawesome/free-solid-svg-icons';
+import { faPenClip, faList } from '@fortawesome/free-solid-svg-icons';
 import { faUser, } from '@fortawesome/free-regular-svg-icons';
 import { useSession, signOut } from "next-auth/react";
-import { Skeleton } from 'primereact/skeleton';    
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import logo from "../../../public/pngwing.png";
 import Image from "next/image";
+import Gauge from "../components/Gauge";
 
 interface ExtendedUser {
   name?: string | null;
@@ -21,105 +21,74 @@ interface ExtendedSession {
   user?: ExtendedUser;
 }
 
+const navItemBase = "font-display font-semibold text-sm px-3.5 py-2 rounded-full cursor-pointer transition-colors duration-200 flex items-center gap-2";
+const navItemInactive = `${navItemBase} text-steel-50 hover:bg-white/10 hover:text-brass-light`;
+const navItemActive = `${navItemBase} text-ink bg-brass`;
 
 export default function Navbar() {
 
   const [selectedItem, setSelectedItem] = useState<string>('');
 
-    const [isLoading, setIsLoading] = useState(true);
-      const router = useRouter();
-
+  const router = useRouter();
 
   const { data: session } = useSession();
 
   const isSelected = (itemName: string) => selectedItem === itemName;
 
-  const activeStyle = 'underline underline-offset-8 rounded-sm bg-green-200 p-0.5'
-
-    useEffect(() => {
-    // Simula la carga de datos con un temporizador
-    const loadData = async () => {
-      // Aquí iría tu lógica de carga de datos
-      // Por ejemplo, cargar datos de una API
-      setTimeout(() => {
-        setIsLoading(false); // Cambia isLoading a false una vez que los datos estén cargados
-      }, 500); // Simula un retraso de 2 segundos
-    };
-
-    loadData();
-  }, []);
-
-    const handleSignOut = async () => {
+  const handleSignOut = async () => {
     await signOut({ redirect: false });
-    router.push('/auth/login'); // Redirige a la página de inicio de sesión después de cerrar sesión
+    router.push('/auth/login');
   };
 
-  if (isLoading) {
-    return (
-          <nav className="flex justify-between bg-sky-200">
-            <ul>
-              <div className="ml-6 m-2">
-                <Skeleton shape="circle" size="5rem"></Skeleton>
-              </div>
-            </ul>
-            <ul></ul>
-            <ul className="flex items-center justify-center gap-10 mr-10 text-lg">
-                <Skeleton width="5rem" className="mb-2"></Skeleton>
-                <Skeleton width="5rem" className="mb-2"></Skeleton>
-                <Skeleton width="5rem" className="mb-2"></Skeleton>
-                <Skeleton width="5rem" className="mb-2"></Skeleton>
-              <li></li>
-            </ul>
-            
-        </nav>
-    );
-  }
+  return (
+    <nav className="flex justify-between items-center bg-gradient-to-r from-steel-700 via-steel-600 to-gauge-dark border-b-2 border-brass px-6 py-2.5 shadow-md">
+      <Link href="/" className="flex items-center gap-3 shrink-0">
+        <Image src={logo} alt="logo" width={44} height={44} className="rounded-full bg-white/90 p-1" />
+        <span className="font-display text-xl font-bold text-white">
+          Aires<span className="text-brass-light">Val</span>
+        </span>
+        <Gauge className="w-5 h-5 text-brass-light hidden sm:block" />
+      </Link>
 
-    return (
-        <nav className="flex justify-between bg-sky-200">
-            <ul>
-              <div className="ml-6 m-2">
-                <Link href="/"> 
-                  <Image src={logo} alt="logo" width={120} height={120} />         
-                  <span className="ml-14 text-2xl font-sans font-bold text-blue-950">Aires<span className="text-blue-400">Val</span></span>
-                </Link>
-              </div>
-            </ul>
-            <ul></ul>
-            <ul className="flex items-center justify-center gap-10 mr-10 text-lg">
-                <Link href="/cpv">
-                  <li onClick={() => setSelectedItem('home')} 
-                    className={isSelected('home') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'}>
-                    CPV <FontAwesomeIcon icon={faAngleDown} />
-                  </li>
-                </Link>
-                <Link href="/airesval">
-                  <li onClick={() => setSelectedItem('airesval')} className={isSelected('airesval') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'} >
-                    Airesval
-                  </li>
-                </Link>
-                {
-                    (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && (
-                  <Link href="/auth/register">
-                    <li onClick={() => setSelectedItem('register')} className={isSelected('register') ? 'rounded-lg bg-blue-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer' : 'rounded-lg bg-blue-300/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer'}>
-                      Registrarse <FontAwesomeIcon icon={faUser} />
-                    </li>
-                  </Link>
-                    ) 
-                }
-                    {session && (
-                      <li
-                        onClick={handleSignOut}
-                        className="rounded-lg bg-red-400/80 p-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300 cursor-pointer"
-                      >
-                        Cerrar sesión
-                      </li>
-                    )}
-              <li></li>
-            </ul>
-            
-        </nav>
-    )
+      <ul className="flex items-center gap-1.5 sm:gap-3 flex-wrap justify-end">
+        <Link href="/cpv">
+          <li onClick={() => setSelectedItem('home')} className={isSelected('home') ? navItemActive : navItemInactive}>
+            Panel
+          </li>
+        </Link>
+        <Link href="/cpv/technicalSheet">
+          <li onClick={() => setSelectedItem('technicalSheet')} className={isSelected('technicalSheet') ? navItemActive : navItemInactive}>
+            <FontAwesomeIcon icon={faList} className="text-xs" /> Fichas Técnicas
+          </li>
+        </Link>
+        <Link href="/cpv/newTechnicalSheet">
+          <li onClick={() => setSelectedItem('newTechnicalSheet')} className={isSelected('newTechnicalSheet') ? navItemActive : navItemInactive}>
+            <FontAwesomeIcon icon={faPenClip} className="text-xs" /> Nueva Ficha
+          </li>
+        </Link>
+        <Link href="/airesval">
+          <li onClick={() => setSelectedItem('airesval')} className={isSelected('airesval') ? navItemActive : navItemInactive}>
+            Airesval
+          </li>
+        </Link>
+        {
+          (session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' && (
+            <Link href="/auth/register">
+              <li onClick={() => setSelectedItem('register')} className={isSelected('register') ? navItemActive : navItemInactive}>
+                <FontAwesomeIcon icon={faUser} className="text-xs" /> Registrarse
+              </li>
+            </Link>
+          )
+        }
+        {session && (
+          <li
+            onClick={handleSignOut}
+            className={`${navItemBase} text-alert-light hover:text-white hover:bg-alert/80 ml-1`}
+          >
+            Cerrar sesión
+          </li>
+        )}
+      </ul>
+    </nav>
+  )
 }
-
-

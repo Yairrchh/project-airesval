@@ -2,18 +2,52 @@
     margin-right: 40px;
     padding: 0 10px 0 10px;
     transition: background-color 0.3s ease;
-    /* Ajusta el margen derecho para separar los botones */
-}
-
-.p-dialog-header {
-    background-color: #65ced6;
-    text-align: center;
-    /* Cambia #nuevoColor por el color deseado */
 }
 
 .p-confirm-popup-footer .p-button:hover {
-    background-color: #15D3DF;
-    /* Cambia #nuevoColor por el color deseado al hacer focus */
+    background-color: #C69A3D;
 }
 
+.p-dialog-header {
+    background-color: #233240;
+    color: #fff;
+    text-align: center;
+    font-family: var(--font-geist-sans), sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
 
+.p-dialog-header .p-dialog-header-icon {
+    color: #fff;
+}
+
+.p-dialog-header .p-dialog-header-icon:hover {
+    background-color: #C69A3D;
+    color: #101820;
+}
+
+.sheet-table .p-datatable-thead > tr > th {
+    background-color: #233240;
+    color: #fff;
+    font-family: var(--font-geist-sans), sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-color: #1A2530;
+}
+
+.sheet-table .p-datatable-thead > tr > th .p-column-filter input {
+    font-family: var(--font-geist-sans), sans-serif;
+}
+
+.sheet-table .p-datatable-tbody > tr {
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 0.9rem;
+}
+
+.sheet-table .p-datatable-tbody > tr:hover {
+    background-color: #EEF2F5 !important;
+}
+
+.sheet-table .p-datatable-tbody > tr.p-datatable-emptymessage:hover {
+    background-color: transparent !important;
+}

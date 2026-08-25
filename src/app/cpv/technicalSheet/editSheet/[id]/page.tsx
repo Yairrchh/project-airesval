@@ -7,9 +7,6 @@ import { Messages } from 'primereact/messages';
 import { deleteImageById } from "app/actions/actions";
 import { Skeleton } from 'primereact/skeleton';        
 import Image from "next/image";
-import 'primereact/resources/themes/md-light-indigo/theme.css'
-import 'primereact/resources/primereact.min.css'; // core css
-import 'primeicons/primeicons.css'; // iconos
 
 
 interface Image {
@@ -130,6 +127,9 @@ export default function EditSheet({params}: EditSheetProps) {
             .catch(error => {
                 console.error(error, 'Error al obtener la hoja');
             })
+            .finally(() => {
+                setIsLoading(false);
+            })
         };
     }, [params.id]);
 
@@ -221,7 +221,7 @@ export default function EditSheet({params}: EditSheetProps) {
 
         setTimeout(() => {
         router.back();
-        }, 2000);
+        }, 900);
 
         } catch (error) {
           messages.current?.show({severity: 'error', summary: 'Error al guardar', detail: 'No se pudo editar la hoja técnica.'});
@@ -255,18 +255,6 @@ export default function EditSheet({params}: EditSheetProps) {
         }
       };
 
-          useEffect(() => {
-    // Simula la carga de datos con un temporizador
-    const loadData = async () => {
-      // Aquí iría tu lógica de carga de datos
-      // Por ejemplo, cargar datos de una API
-      setTimeout(() => {
-        setIsLoading(false); // Cambia isLoading a false una vez que los datos estén cargados
-      }, 2000); // Simula un retraso de 2 segundos
-    };
-
-    loadData();
-  }, []);
 
   if (isLoading) {
     return (

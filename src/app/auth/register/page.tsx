@@ -3,6 +3,7 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import Gauge from "../../components/Gauge";
 
 export default function RegisterPage() {
 
@@ -37,78 +38,81 @@ export default function RegisterPage() {
         console.log(resJSON)
     });
 
-    console.log(errors)
-
     return (
-        <div className='h-[calc(100vh-10rem)] flex flex-col justify-center items-center '>
-            <div className='mb-2 font-bold text-4xl'>
-                <h1 className='text-2xl'>Registro de Usuario</h1>
+        <div className='min-h-[calc(100vh-10rem)] flex flex-col justify-center items-center bg-paper px-4 py-10'>
+            <div className='w-full max-w-sm'>
+                <div className='card-panel border-t-4 border-t-brass px-8 py-9'>
+                    <div className='flex items-center gap-2 mb-1'>
+                        <Gauge className='w-6 h-6 text-steel-700' needleDeg={20} />
+                        <span className='field-label !mb-0'>Alta de personal</span>
+                    </div>
+                    <h1 className='font-display font-semibold text-2xl text-steel-700 mb-6'>Registro de usuario</h1>
+
+                    <form onSubmit={onSubmit} className='flex flex-col gap-4'>
+                        <div>
+                            <label htmlFor='username' className='field-label'>Nombre de usuario</label>
+                            <input type="text" placeholder='usuario' className='field-input'
+                        {...register("userName", {required: {
+                            value: true,
+                            message: 'Este campo es requerido'
+                        }})}/>
+                            {
+                                errors.userName && typeof errors.userName.message === 'string' &&
+                                (<span className='text-alert text-xs font-medium mt-1 block'>{errors.userName.message}</span>)
+                            }
+                        </div>
+                        <div>
+                            <label htmlFor='email' className='field-label'>Email</label>
+                            <input type="email" placeholder='nombre@ejemplo.com' className='field-input'
+                        {...register("email", {required: {
+                            value: true,
+                            message: 'Este campo es requerido'
+                        }})}/>
+                            {
+                                errors.email && typeof errors.email.message === 'string' &&
+                                (<span className='text-alert text-xs font-medium mt-1 block'>{errors.email.message}</span>)
+                            }
+                        </div>
+                        <div>
+                            <label htmlFor='password' className='field-label'>Contraseña</label>
+                            <input type="password" placeholder='••••••••' className='field-input'
+                        {...register("password", {required: {
+                            value: true,
+                            message: 'Este campo es requerido'
+                        }})}/>
+                            {
+                                errors.password && typeof errors.password.message === 'string' &&
+                                (<span className='text-alert text-xs font-medium mt-1 block'>{errors.password.message}</span>)
+                            }
+                        </div>
+                        <div>
+                            <label htmlFor='confirmPassword' className='field-label'>Confirmar contraseña</label>
+                            <input type="password" placeholder='••••••••' className='field-input'
+                        {...register("confirmPassword", {required: {
+                            value: true,
+                            message: 'Este campo es requerido'
+                        }})}/>
+                            {
+                                errors.confirmPassword && typeof errors.confirmPassword.message === 'string' &&
+                                (<span className='text-alert text-xs font-medium mt-1 block'>{errors.confirmPassword.message}</span>)
+                            }
+                        </div>
+                        <div>
+                            <label htmlFor='typeOfUser' className='field-label'>Tipo de usuario</label>
+                            <select className='field-input font-sans'
+                        {...register("typeOfUser", {required: {
+                            value: true,
+                            message: 'Este campo es requerido'
+                        }})}>
+                            <option value="ADMIN">Admin</option>
+                            <option value="EDITOR">Editor</option>
+                            <option value="VIEWER">Viewer</option>
+                        </select>
+                        </div>
+                        <button className='btn-primary w-full mt-2' type='submit'>Registrar</button>
+                    </form>
+                </div>
             </div>
-            <form onSubmit={onSubmit} className=' mb-2 flex flex-col items-center w-1/4 border-2 border-sky-300 rounded p-4 bg-[#BAE6FD]'>
-                <div>
-                    <label htmlFor='username'>Nombre de usuario:</label>
-                    <input type="text" placeholder='Username' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
-                {...register("userName", {required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                }})}/>
-                </div>
-                {
-                    errors.userName && typeof errors.userName.message === 'string' && 
-                    (<span className='text-red-500 text-xs font-bold'>*{errors.userName.message}</span>)
-                }
-                <div>
-                    <label htmlFor='email'>Email:</label>
-                    <input type="email" placeholder='Example@gmail.com' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
-                {...register("email", {required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                }})}/>
-                </div>
-                {
-                    errors.email && typeof errors.email.message === 'string' && 
-                    (<span className='text-red-500 text-xs font-bold'>*{errors.email.message}</span>)
-                }
-                <div>
-                    <label htmlFor='password'>Password:</label>
-                    <input type="password" placeholder='*******' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
-                {...register("password", {required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                }})}/>
-                </div>
-                {
-                    errors.password && typeof errors.password.message === 'string' && 
-                    (<span className='text-red-500 text-xs font-bold'>*{errors.password.message}</span>)
-                }
-                <div>
-                    <label htmlFor='confirmPassword'>Confirm Password:</label>
-                    <input type="password" placeholder='*******' className='p-1.5 rounded block mb-2 bg-white text-slate-900 focus:outline-blue-500'
-                {...register("confirmPassword", {required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                }})}/>
-                </div>
-                {
-                    errors.confirmPassword && typeof errors.confirmPassword.message === 'string' && 
-                    (<span className='text-red-500 text-xs font-bold'>*{errors.confirmPassword.message}</span>)
-                }
-                <div className='flex items-center justify-center gap-2'>
-                    <label>Tipo de usuario:</label>
-                    <select className='p-1 px-2 rounded block bg-white text-slate-900 border border-blue-950/35 focus:outline-blue-500'
-                {...register("typeOfUser", {required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                }})}>
-                    <option value="ADMIN">Admin</option>
-                    <option value="EDITOR">Editor</option>
-                    <option value="VIEWER">Viewer</option>
-                </select>
-                </div>
-            <button className='bg-blue-400/70 text-black mt-3 w-full px-5 py-2 rounded transition-transform transform-gpu hover:scale-110 ease-out duration-300' type='submit'>Registrar</button>
-            </form>
-
-
         </div>
     )
 }

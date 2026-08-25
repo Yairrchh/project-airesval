@@ -1,12 +1,11 @@
 'use client';
 import Link from "next/link";
-import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faBars , faRotate, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useSession } from 'next-auth/react';
 import Image from "next/image";
-// import { useSession, Session } from 'next-auth/react';
 import logo from "../../../public/cvp.png";
+import Gauge from "../components/Gauge";
 
 
 interface ExtendedUser {
@@ -24,34 +23,36 @@ export default function Layout() {
 
   const { data: session } = useSession();
 
-
-//      const { data: sessionData } = useSession();
-//       const [session, setSession] = useState<Session | null>(null)
-
-//     useEffect(() => {
-//     setSession(sessionData);
-//   }, [sessionData]);
-
     return (
-        <main className="flex items-center justify-center gap-20">
-            <div className="mt-16">
-                  <Image src={logo} alt="logo" width={500} height={500} />         
+        <main className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 min-h-[calc(100vh-15rem)] bg-paper px-6 py-14">
+            <div className="mt-2 lg:mt-0">
+                  <Image src={logo} alt="logo" width={420} height={420} />
             </div>
-            <div className="flex flex-col gap-x-10 text-5x1 gap-16 mt-16">
+            <div className="flex flex-col gap-5 w-full max-w-xs">
+                <div className="flex items-center gap-2 text-steel-400">
+                  <Gauge className="w-5 h-5" />
+                  <span className="field-label !mb-0">Panel de control</span>
+                </div>
                 {
                     ((session as ExtendedSession)?.user?.typeOfUser === 'ADMIN' || (session as ExtendedSession)?.user?.typeOfUser === 'EDITOR') && (
                     <Link href="/cpv/newTechnicalSheet" >
-                        <div className="bg-blue-300 rounded-lg flex items-center justify-center p-5 gap-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300">
-                        <FontAwesomeIcon icon={faPlus} />
-                        <p> Nueva Ficha técnica</p>
+                        <div className="card-panel border-l-4 border-l-brass flex items-center gap-4 px-6 py-5 hover:border-l-gauge hover:-translate-y-0.5 transition-all duration-200 group">
+                          <FontAwesomeIcon icon={faPlus} className="text-brass text-xl group-hover:text-gauge transition-colors" />
+                          <div>
+                            <p className="font-display font-semibold text-lg text-steel-700">Nueva Ficha técnica</p>
+                            <p className="text-xs text-steel-400">Registrar una inspección</p>
+                          </div>
                         </div>
                     </Link>
-                    ) 
+                    )
                 }
                 <Link href="/cpv/technicalSheet">
-                    <div className="bg-blue-300 rounded-lg flex items-center justify-center p-5 gap-2 transition-transform transform-gpu hover:scale-110 ease-out duration-300">
-                        <FontAwesomeIcon icon={faBars} />
-                        <p>Fichas Técnicas</p>
+                    <div className="card-panel border-l-4 border-l-gauge flex items-center gap-4 px-6 py-5 hover:border-l-brass hover:-translate-y-0.5 transition-all duration-200 group">
+                        <FontAwesomeIcon icon={faBars} className="text-gauge text-xl group-hover:text-brass transition-colors" />
+                        <div>
+                          <p className="font-display font-semibold text-lg text-steel-700">Fichas Técnicas</p>
+                          <p className="text-xs text-steel-400">Ver historial de equipos</p>
+                        </div>
                     </div>
                 </Link>
             </div>

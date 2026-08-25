@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {useForm} from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import Gauge from "../components/Gauge";
 
 export default function Airesval() {
     return(
-        <div className='flex items-center justify-center mt-52'>
-            <h1 className='text-3xl font-sans'>Airesval aun no esta disponible</h1>
+        <div className='flex flex-col items-center justify-center gap-4 min-h-[calc(100vh-15rem)] bg-paper px-4'>
+            <Gauge className='w-10 h-10 text-steel-400' needleDeg={90} />
+            <h1 className='font-display font-semibold text-2xl text-steel-700 text-center'>Airesval aún no está disponible</h1>
+            <p className='text-steel-400 text-sm'>Esta sección está en construcción.</p>
         </div>
     )
 }
